@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import operator
+from google import genai
 import os
 import re
 from datetime import date, timedelta
@@ -113,7 +114,7 @@ class State(TypedDict):
 # -----------------------------
 # 2) LLM
 # -----------------------------
-llm = ChatOpenAI(model="gpt-4.1-mini")
+llm = ChatOpenAI(model="gpt-4.1-mini",temperature=0.7)
 
 # -----------------------------
 # 3) Router

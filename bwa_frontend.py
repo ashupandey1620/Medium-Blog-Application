@@ -12,10 +12,115 @@ from typing import Any, Dict, Optional, List, Iterator, Tuple
 import pandas as pd
 import streamlit as st
 
+
+
 # -----------------------------
 # Import your compiled LangGraph app
 # -----------------------------
 from bwa_backend import app
+
+
+
+st.markdown("""
+<style>
+
+/* ---------- GLOBAL BACKGROUND ---------- */
+.main {
+    background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+    color: #0f172a;
+}
+
+/* ---------- TITLE ---------- */
+h1 {
+    text-align: center;
+    font-weight: 700;
+    background: linear-gradient(90deg, #2563eb, #38bdf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* ---------- SIDEBAR ---------- */
+section[data-testid="stSidebar"] {
+    background: #e0f2fe;
+    border-right: 1px solid #bae6fd;
+}
+
+/* ---------- BUTTONS ---------- */
+.stButton button {
+    border-radius: 10px;
+    background: linear-gradient(90deg, #2563eb, #3b82f6);
+    color: white;
+    font-weight: 600;
+    padding: 0.6rem 1rem;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.stButton button:hover {
+    background: linear-gradient(90deg, #1d4ed8, #2563eb);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+/* ---------- INPUT FIELDS ---------- */
+textarea, input {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #93c5fd !important;
+    border-radius: 8px !important;
+}
+
+/* ---------- TABS ---------- */
+button[data-baseweb="tab"] {
+    font-size: 15px;
+    font-weight: 600;
+    color: #64748b;
+}
+
+button[data-baseweb="tab"][aria-selected="true"] {
+    color: #2563eb;
+    border-bottom: 2px solid #2563eb;
+}
+
+/* ---------- CARD STYLE ---------- */
+div[data-testid="stVerticalBlock"] > div {
+    background: white;
+    border-radius: 14px;
+    padding: 12px;
+    border: 1px solid #e0f2fe;
+}
+
+/* ---------- METRICS ---------- */
+[data-testid="metric-container"] {
+    background: #f0f9ff;
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px solid #bae6fd;
+}
+
+/* ---------- DATAFRAME ---------- */
+.css-1d391kg {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* ---------- SCROLLBAR ---------- */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-thumb {
+    background: #93c5fd;
+    border-radius: 10px;
+}
+
+/* ---------- DIVIDER ---------- */
+hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #bae6fd, transparent);
+}
+
+</style>
+""", unsafe_allow_html=True)
 
 
 # -----------------------------
@@ -188,22 +293,30 @@ def extract_title_from_md(md: str, fallback: str) -> str:
 # -----------------------------
 # Streamlit UI
 # -----------------------------
-st.set_page_config(page_title="LangGraph Blog Writer", layout="wide")
+st.set_page_config(page_title="LangGraph Medium writer", layout="wide")
 
-st.title("Blog Writing Agent")
+st.markdown("""
+<h1>✍️ Medium Article Generator</h1>
+<p style='text-align:center; color:#94a3b8; font-size:16px;'>
+Generate research-backed, production-ready blogs with images in seconds
+</p>
+""", unsafe_allow_html=True)
 
 with st.sidebar:
-    st.header("Generate New Blog")
+    st.markdown("### 🚀 Create New Blog Article")
+    st.caption("Generate SEO-ready articles with AI")
     topic = st.text_area(
-        "Topic",
-        height=120,
+    "🧠 Enter Blog Topic",
+    height=120,
+    placeholder="e.g. Future of AI in Healthcare..."
     )
     as_of = st.date_input("As-of date", value=date.today())
-    run_btn = st.button("🚀 Generate Blog", type="primary")
+    run_btn = st.button("✨ Generate Blog", use_container_width=True)
 
-    # ✅ NEW: Past blogs list (keeps everything else intact)
+    # NEW: Past blogs list (keeps everything else intact)
     st.divider()
-    st.subheader("Past blogs")
+    st.markdown("### 📚 Past Blogs")
+    st.caption("Reload and preview previously generated content")
 
     past_files = list_past_blogs()
     if not past_files:
@@ -231,7 +344,7 @@ with st.sidebar:
         )
         selected_md_file = file_by_label.get(selected_label)
 
-        if st.button("📂 Load selected blog"):
+        if st.button(" Load selected blog"):
             if selected_md_file:
                 md_text = read_md_file(selected_md_file)
                 # Load into session_state as if it were a run output
@@ -314,7 +427,12 @@ if run_btn:
                 "images": len(current_state.get("image_specs", []) or []),
                 "sections_done": len(current_state.get("sections", []) or []),
             }
-            progress_area.json(summary)
+            col1, col2, col3, col4 = st.columns(4)
+
+            col1.metric("Mode", summary.get("mode") or "-")
+            col2.metric("Research", "Yes" if summary.get("needs_research") else "No")
+            col3.metric("Evidence", summary.get("evidence_count"))
+            col4.metric("Sections", summary.get("sections_done"))
 
             log(f"[{kind}] {json.dumps(payload, default=str)[:1200]}")
 
@@ -441,8 +559,10 @@ if out:
                 if not files:
                     st.warning("images/ exists but is empty.")
                 else:
-                    for p in sorted(files):
-                        st.image(str(p), caption=p.name, use_container_width=True)
+                    cols = st.columns(3)
+                    for i, p in enumerate(sorted(files)):
+                        with cols[i % 3]:
+                            st.image(str(p), caption=p.name, use_container_width=True)
 
                 z = images_zip(images_dir)
                 if z:
