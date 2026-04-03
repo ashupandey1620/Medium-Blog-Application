@@ -148,19 +148,6 @@ The system is built using a **multi-agent design pattern**:
 
 ---
 
-## 📽️ Demo
-
-👉 [YouTube Video Link]
-
----
-
-## 🔗 Links
-
-- GitHub Repo: [Your Repo Link]
-- Architecture Diagram: [Optional]
-
----
-
 ## 👨‍💻 Author
 
 **Ashutosh Pandey**  
