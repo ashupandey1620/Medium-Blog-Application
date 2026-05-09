@@ -1,9 +1,5 @@
 # Medium-Blog-Application
-<p align="center">
-  <a href="https://www.youtube.com/watch?v=9drtUCNrcaU">
-    <img src="https://img.youtube.com/vi/9drtUCNrcaU/maxresdefault.jpg" alt="Watch the video">
-  </a>
-</p>
+[![Watch the video](https://img.youtube.com/vi/9drtUCNrcaU/maxresdefault.jpg)](https://www.youtube.com/watch?v=9drtUCNrcaU)
 <img width="1376" height="740" alt="image" src="https://github.com/user-attachments/assets/48360a3f-e7fb-414e-a5a8-2bbbd81d8d60" />
 
 <img width="982" height="571" alt="image" src="https://github.com/user-attachments/assets/85b0ddac-de36-4fb8-9dbe-80b6766ce67b" />
